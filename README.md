@@ -79,8 +79,8 @@ Note: More strict validation (e.g. schema-based payload validation) can be added
 ### Idempotency handling
 - Webhook events are processed only once using eventId.
 - Behavior:
-1. eventId already processed → request is ignored
-2. eventId is new → webhook is processed and stored
+1. eventId already processed -> request is ignored
+2. eventId is new -> webhook is processed and stored
 Note: Idempotency data is lost when the server restarts. For production, idempotency should be enforced at the database level.
 
 ---
@@ -116,6 +116,11 @@ URL: http://localhost:3000/webhooks
 Header: x-signature: <generated_signature>
 Body: raw JSON (must match the signed payload exactly)
 
+## POST /webhooks
+### Signature validation
+- Send a request with a valid HMAC signature -> Webhook is accepted and processed.
+- Send a request with an invalid or missing signature -> Server responds with 401 Unauthorized.
+
 ### Test idempotency
 - Send the same request twice with the same eventId
 - The second request will be ignored as a duplicate event
@@ -123,3 +128,11 @@ Body: raw JSON (must match the signed payload exactly)
 ### Test timestamp validation
 - Send a request with an old timestamp
 - The server will reject the request
+
+## GET /webhooks
+- Test when no webhook has been stored -> Returns an empty list.
+- Test when one or more webhooks exist -> Returns the full list of webhooks and the correct count.
+
+## GET /webhooks/:id
+- Test with a valid webhook ID -> Returns the corresponding webhook event.
+- Test with a non-existing webhook ID -> Server responds with 404 Not Found.
