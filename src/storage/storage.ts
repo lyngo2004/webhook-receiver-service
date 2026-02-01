@@ -3,11 +3,11 @@ import { Webhook } from "src/common/types/webhook.type";
 
 let webhooks: Webhook[] = [];
 
-const processedEventIds = new Set<string>;
+const processedEventIds = new Set<string>();
 
 export const storage = {
 
-    existsEvent(eventId: string): boolean{
+    existsEvent(eventId: string): boolean {
         return processedEventIds.has(eventId);
     },
 
@@ -33,5 +33,6 @@ export const storage = {
 
     clear(): void {
         webhooks = [];
+        processedEventIds.clear();
     }
 };

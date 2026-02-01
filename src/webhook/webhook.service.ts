@@ -18,8 +18,6 @@ export class WebhookService {
   handleWebhook(rawBody: string, signature: string | undefined, dto: CreateWebhookDto) {
     const secret = this.configService.get<string>('WEBHOOK_SECRET');
 
-    console.log(signature)
-    console.log(secret)
     if (!signature || !secret) {
       throw new UnauthorizedException('Missing signature');
     }
@@ -28,10 +26,6 @@ export class WebhookService {
       .createHmac('sha256', secret)
       .update(rawBody)
       .digest('hex');
-
-    console.log('RAW BODY:', rawBody);
-    console.log('SIGNATURE HEADER:', signature);
-    console.log('EXPECTED:', expectedSignature);
 
     if (signature !== expectedSignature) {
       throw new UnauthorizedException('Invalid signature');
